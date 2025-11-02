@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single File Light Pink Calculator</title>
+    <style>
+        /* Custom Light Pink Palette */
+        :root {
+            --bg-color: #F8F4F9;          /* Very Light Grey-Pink for body */
+            --calculator-bg: #EAD0D9;     /* Light Dusty Pink for calculator body */
+            --display-bg: #F9F1F3;        /* Off-White/Pale Pink for display */
+            --display-text: #2C2C2C;      /* Dark Text */
+            --number-btn-bg: #F7DCE6;     /* Soft Light Pink for numbers */
+            --number-btn-hover: #F2C7D6;
+            --operator-btn-bg: #EAC9D2;   /* Slightly darker pink for operators */
+            --operator-btn-hover: #E4B9C6;
+            --clear-del-btn-bg: #DDAEC0;  /* Medium Pink for AC/DEL */
+            --clear-del-btn-hover: #D29FB0;
+            --equals-btn-bg: #DB7093;     /* Deep Pink for equals button */
+            --equals-btn-hover: #D05980;
+            --btn-text: #3D3D3D;          /* Button Text Color */
+            --border-radius: 20px;
+            --btn-radius: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+        }
+
+        .calculator {
+            background-color: var(--calculator-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), /* Soft bottom shadow */
+                        0 0 0 10px rgba(255, 255, 255, 0.4) inset; /* Light inner glow */
+        }
+
+        #display {
+            width: 100%;
+            height: 60px;
+            background-color: var(--display-bg);
+            border: none;
+            border-radius: var(--btn-radius);
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            font-size: 2.2em;
+            text-align: right;
+            color: var(--display-text);
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.1); /* Display inner shadow */
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: var(--btn-radius);
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--btn-text);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Button lift shadow */
+        }
+
+        /* Number Buttons */
+        .number, .decimal {
+            background-color: var(--number-btn-bg);
+        }
+
+        .number:hover, .decimal:hover {
+            background-color: var(--number-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Operator Buttons */
+        .operator {
+            background-color: var(--operator-btn-bg);
+            color: var(--display-text); /* Slightly darker text for contrast */
+        }
+
+        .operator:hover {
+            background-color: var(--operator-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Clear and Delete Buttons */
+        .clear, .del {
+            background-color: var(--clear-del-btn-bg);
+            font-weight: bold;
+        }
+
+        .clear:hover, .del:hover {
+            background-color: var(--clear-del-btn-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Equals Button */
+        .equals {
+            background-color: var(--equals-btn-bg);
+            grid-column: span 2; /* Make it span two columns */
+            color: white; /* White text for high contrast */
+            font-weight: bold;
+        }
+
+        .equals:hover {
+            background-color: var(--equals-btn-hover);
+            transform: scale(1.03); /* Slight scale effect */
+        }
+
+        /* Custom 0 button for a better layout (spans 2 columns) */
+        .zero {
+            grid-column: span 2;
+            background-color: var(--number-btn-bg);
+        }
+
+        .zero:hover {
+            background-color: var(--number-btn-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Fix for AC and DEL buttons (they span 1 column) */
+        .clear, .del {
+            grid-column: span 1; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <input type="text" id="display" readonly>
+    <div class="buttons">
+        <button class="btn clear" data-value="AC">AC</button>
+        <button class="btn del" data-value="DEL">DEL</button>
+        <button class="btn operator" data-value="%">%</button>
+        <button class="btn operator" data-value="/">/</button>
+
+        <button class="btn number" data-value="7">7</button>
+        <button class="btn number" data-value="8">8</button>
+        <button class="btn number" data-value="9">9</button>
+        <button class="btn operator" data-value="*">x</button>
+
+        <button class="btn number" data-value="4">4</button>
+        <button class="btn number" data-value="5">5</button>
+        <button class="btn number" data-value="6">6</button>
+        <button class="btn operator" data-value="-">-</button>
+
+        <button class="btn number" data-value="1">1</button>
+        <button class="btn number" data-value="2">2</button>
+        <button class="btn number" data-value="3">3</button>
+        <button class="btn operator" data-value="+">+</button>
+
+        <button class="btn zero" data-value="0">0</button>
+        <button class="btn decimal" data-value=".">.</button>
+        <button class="btn equals" data-value="=">=</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const display = document.getElementById('display');
+        const buttons = document.querySelectorAll('.btn');
+        let currentInput = '';
+        let operator = null;
+        let previousInput = '';
+        let waitingForSecondOperand = false;
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.dataset.value;
+
+                if (value === 'AC') {
+                    // All Clear
+                    currentInput = '';
+                    operator = null;
+                    previousInput = '';
+                    waitingForSecondOperand = false;
+                    display.value = '';
+                    return;
+                }
+
+                if (value === 'DEL') {
+                    // Delete Last Character
+                    currentInput = currentInput.slice(0, -1);
+                    display.value = currentInput;
+                    return;
+                }
+
+                if (value === '=') {
+                    // Calculate Result
+                    if (previousInput === '' || currentInput === '' || operator === null) return;
+                    
+                    try {
+                        // Using eval for simple demo (Not recommended for production due to security)
+                        const result = eval(previousInput + operator + currentInput);
+                        display.value = result;
+                        currentInput = String(result);
+                        previousInput = '';
+                        operator = null;
+                        waitingForSecondOperand = false;
+
+                    } catch (e) {
+                        display.value = 'Error';
+                        currentInput = '';
+                        previousInput = '';
+                        operator = null;
+                    }
+                    return;
+                }
+
+                if (['/', '*', '-', '+', '%'].includes(value)) {
+                    // Handle Operators
+                    if (currentInput === '' && previousInput === '') return;
+
+                    if (previousInput !== '' && currentInput !== '') {
+                        // Auto-calculate if an operation is chained (e.g., 5+3+ )
+                        try {
+                            previousInput = String(eval(previousInput + operator + currentInput));
+                        } catch (e) {
+                            previousInput = '0';
+                        }
+                        display.value = previousInput;
+                        currentInput = '';
+
+                    } else if (previousInput === '') {
+                        previousInput = currentInput;
+                    }
+                    
+                    operator = value;
+                    currentInput = '';
+                    waitingForSecondOperand = true;
+                    return;
+                }
+
+                // Handle Numbers and Decimal
+                if (value === '.' && currentInput.includes('.')) return;
+                
+                if (waitingForSecondOperand) {
+                    // Start a new input after an operator
+                    currentInput = value;
+                    waitingForSecondOperand = false;
+                } else {
+                    currentInput += value;
+                }
+                display.value = currentInput;
+
+            });
+        });
+    });
+</script>
+</body>
+</html>
